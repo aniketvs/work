@@ -10,10 +10,10 @@ app.post('/form',async (req,res)=>{
     try {
         const formData = req.body;
     
-        // Create a new document using the FormDataModel
+  
         const newFormData = new FormDataModel(formData);
     
-        // Save the document to the database
+        
         await newFormData.save();
     
         res.status(201).json({ success: true, message: 'successfully.' });
@@ -24,7 +24,7 @@ app.post('/form',async (req,res)=>{
 })
 app.get('/',async (req,res)=>{
     try {
-        // Fetch all form data from the database
+      
         const formDataList = await FormDataModel.find({});
     
         res.status(200).json({ success: true, data: formDataList });

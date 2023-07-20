@@ -1,9 +1,8 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const validate = require('mongoose-validator');
-const { Country, State, City } = require('country-state-city');
+const { Country, State} = require('country-state-city');
 
-// Custom validator for date of birth (DOB) - must be older than 14 years
 const dobValidator = [
   validate({
     validator: (value) => {
