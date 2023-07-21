@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const validate = require('mongoose-validator');
-const { Country, State} = require('country-state-city');
+const validate = require("mongoose-validator");
+const { Country, State, City } = require("country-state-city");
 
 const dobValidator = [
   validate({
@@ -11,7 +11,7 @@ const dobValidator = [
       const diffInYears = (currentDate - dob) / (1000 * 60 * 60 * 24 * 365);
       return diffInYears >= 14;
     },
-    message: 'Date of birth must be older than 14 years.',
+    message: "Date of birth must be older than 14 years.",
   }),
 ];
 
@@ -21,8 +21,8 @@ const formDataSchema = new Schema({
     required: true,
     validate: [
       validate({
-        validator: 'isAlpha',
-        message: 'First Name must contain only alphabets.',
+        validator: "isAlpha",
+        message: "First Name must contain only alphabets.",
       }),
     ],
   },
@@ -31,8 +31,8 @@ const formDataSchema = new Schema({
     required: true,
     validate: [
       validate({
-        validator: 'isAlpha',
-        message: 'Last Name must contain only alphabets.',
+        validator: "isAlpha",
+        message: "Last Name must contain only alphabets.",
       }),
     ],
   },
@@ -41,8 +41,8 @@ const formDataSchema = new Schema({
     required: true,
     validate: [
       validate({
-        validator: 'isEmail',
-        message: 'Invalid email format.',
+        validator: "isEmail",
+        message: "Invalid email format.",
       }),
     ],
   },
@@ -55,7 +55,7 @@ const formDataSchema = new Schema({
           const countries = Country.getAllCountries();
           return countries.some((country) => country.isoCode === value);
         },
-        message: 'Invalid country selected.',
+        message: "Invalid country selected.",
       },
     ],
   },
@@ -68,17 +68,33 @@ const formDataSchema = new Schema({
           const states = State.getStatesOfCountry(this.country);
           return states.some((state) => state.isoCode === value);
         },
-        message: 'Invalid state selected.',
+        message: "Invalid state selected.",
       },
     ],
   },
   city: {
     type: String,
+    required: true,
+    validate: [
+      {
+        validator: function (value) {
+          let getctu = City.getCitiesOfCountry(this.country);
+
+          getctu = getctu.filter((item) => {
+            return item.name === value;
+          });
+          
+
+          return getctu.some((city) => city.name === value);
+        },
+        message: "Invalid city selected",
+      },
+    ],
   },
   gender: {
     type: String,
     required: true,
-    enum: ['male', 'female'],
+    enum: ["male", "female"],
   },
   dob: {
     type: Date,
@@ -87,6 +103,6 @@ const formDataSchema = new Schema({
   },
 });
 
-const FormDataModel = mongoose.model('FormData', formDataSchema);
+const FormDataModel = mongoose.model("FormData", formDataSchema);
 
 module.exports = FormDataModel;
